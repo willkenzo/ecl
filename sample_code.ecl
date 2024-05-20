@@ -1,13 +1,13 @@
 IMPORT STD;
 
 // Defining layouts
-layoutPeople := RECORD
+lPeople := RECORD
     UNSIGNED PersonID;
     STRING   FirstName;
     STRING   LastName;
 END;
 
-layoutAddress := RECORD
+lAddress := RECORD
     UNSIGNED PersonID;
     STRING   State;
     STRING   City;
@@ -19,14 +19,14 @@ dPeople := DATASET(// Data
                     {2, 'Joe', 'Blow'},
                     {3, 'Jane', 'Smith'}],
                    // Layout
-                   layoutPeople);
+                   lPeople);
 
 dAddress := DATASET([// Data
                      {1, 'SP', 'Sao Paulo'},
                      {2, 'RJ', 'Rio de Janeiro'},
                      {3, 'MG', 'Belo Horizonte'}],
                      // Layout
-                    layoutAddress);
+                    lAddress);
 
 // Uppercase in all STRING columns from dPeople and dAddress
 dPeople1 := TABLE(dPeople,
@@ -39,7 +39,7 @@ dAddress1 := TABLE(dAddress,
                     STRING   State    := STD.Str.ToUpperCase(dAddress.State);
                     STRING   City     := STD.Str.ToUpperCase(dAddress.City)});
 // LEFT JOIN
-layoutPeopleAddress := RECORD
+lPeopleAddress := RECORD
     UNSIGNED PersonID;
     STRING   FirstName;
     STRING   LastName;
@@ -50,7 +50,7 @@ END;
 dPeopleAddress :=  JOIN(dPeople1,
                         dAddress1,
                         LEFT.PersonID = RIGHT.PersonID,
-                        TRANSFORM(layoutPeopleAddress, 
+                        TRANSFORM(lPeopleAddress, 
                                   SELF.PersonID  := LEFT.PersonID;
                                   SELF.FirstName := LEFT.FirstName;
                                   SELF.LastName  := LEFT.LastName;
