@@ -39,7 +39,7 @@ dAddress1 := TABLE(dAddress,
                     STRING   State    := STD.Str.ToUpperCase(dAddress.State);
                     STRING   City     := STD.Str.ToUpperCase(dAddress.City)});
 // LEFT JOIN
-layoutJoin := RECORD
+layoutPeopleAddress := RECORD
     UNSIGNED PersonID;
     STRING   FirstName;
     STRING   LastName;
@@ -47,18 +47,15 @@ layoutJoin := RECORD
     STRING   City;
 END;
 
-layoutJoin functionJoin(layoutPeople L, layoutAddress R) := TRANSFORM
-    SELF.PersonID  := L.PersonID;
-    SELF.FirstName := L.FirstName;
-    SELF.LastName  := L.LastName;
-    SELF.State     := R.State;
-    SELF.City      := R.City;
-END;
-
 dPeopleAddress :=  JOIN(dPeople1,
-                        dAddress1, 
+                        dAddress1,
                         LEFT.PersonID = RIGHT.PersonID,
-                        functionJoin(LEFT, RIGHT),
+                        TRANSFORM(layoutPeopleAddress, 
+                                  SELF.PersonID  := LEFT.PersonID;
+                                  SELF.FirstName := LEFT.FirstName;
+                                  SELF.LastName  := LEFT.LastName;
+                                  SELF.State     := RIGHT.State;
+                                  SELF.City      := RIGHT.City),
                         LEFT OUTER,
                         LOCAL);
 
